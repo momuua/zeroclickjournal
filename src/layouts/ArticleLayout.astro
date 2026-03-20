@@ -5,43 +5,44 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props {
   entry: CollectionEntry<'articles'>;
 }
-
 const { entry } = Astro.props;
-const { title, description, category, pubDate, modDate, isFAQ, faqItems } = entry.data;
-
-// Extract headings for ToC (manual list from frontmatter, or you can use remark plugin)
-const toc = entry.data.toc || [];
+const { title, description, category, pubDate, modDate, isFAQ, faqItems, toc } = entry.data;
+const tagClass = { seo: 'tag-seo', ai: 'tag-ai', llm: 'tag-llm' }[category];
 ---
-<BaseLayout
-  title={title}
-  description={description}
-  pubDate={pubDate}
-  modDate={modDate}
-  isFAQ={isFAQ}
-  faqItems={faqItems}
->
-  <div class="content-area">
-    <article>
-      <div class="article-meta">
-        <a href={`/${category}`}>{category}</a>
-        {pubDate && <span>{pubDate.toISOString().slice(0, 10)}</span>}
-      </div>
-      <h1>{title}</h1>
-      <p class="article-desc">{description}</p>
-      <slot />
-    </article>
-
-    <aside>
-      {toc.length > 0 && (
-        <>
-          <p class="toc-title">On this page</p>
+<BaseLayout title={title} description={description} pubDate={pubDate} modDate={modDate} isFAQ={isFAQ} faqItems={faqItems}>
+  <div class="wrap">
+    <div class="article-layout">
+      <article>
+        <div class="article-header">
+          <div class="meta">
+            <a href={`/${category}`} class={`tag ${tagClass}`}>{category}</a>
+            {pubDate && <span class="date">{pubDate.toISOString().slice(0,10)}</span>}
+          </div>
+          <h1>{title}</h1>
+          <p class="article-desc">{description}</p>
+        </div>
+        <slot />
+      </article>
+      <aside class="article-sidebar">
+        {toc && toc.length > 0 && (
+          <div class="sidebar-box">
+            <p class="sidebar-title">On this page</p>
+            <ul class="toc-list">
+              {toc.map((item: {text:string;slug:string}) => (
+                <li><a href={`#${item.slug}`}>{item.text}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+        <div class="sidebar-box" style="margin-top:16px">
+          <p class="sidebar-title">Categories</p>
           <ul class="toc-list">
-            {toc.map((item: { text: string; slug: string }) => (
-              <li><a href={`#${item.slug}`}>{item.text}</a></li>
-            ))}
+            <li><a href="/seo">SEO &amp; GEO</a></li>
+            <li><a href="/ai">AI Systems</a></li>
+            <li><a href="/llm">LLM Technology</a></li>
           </ul>
-        </>
-      )}
-    </aside>
+        </div>
+      </aside>
+    </div>
   </div>
 </BaseLayout>

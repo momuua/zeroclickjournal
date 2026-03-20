@@ -1,19 +1,19 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const articles = (await getCollection('articles', ({data}) => data.category === 'seo'))
+const articles = (await getCollection('articles', ({data}) => data.category === 'ai'))
   .sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
-<BaseLayout title="SEO & GEO — Zero Click Journal" description="Technical articles on search engine optimization and generative engine optimization.">
+<BaseLayout title="AI Systems — Zero Click Journal" description="In-depth technical articles on AI systems, machine learning, and enterprise AI adoption.">
   <div class="wrap">
     <div class="cat-header">
-      <span class="tag tag-seo">SEO &amp; GEO</span>
-      <h1>Search &amp; Generative<br />Engine Optimization</h1>
-      <p>Technical documentation on ranking in traditional search and getting cited by AI-generated answers.</p>
+      <span class="tag tag-ai">AI</span>
+      <h1>AI Systems</h1>
+      <p>Technical breakdowns of AI architectures, enterprise deployment patterns, and emerging AI capabilities.</p>
     </div>
     <div class="article-list">
       {articles.map((e, i) => (
-        <a href={`/seo/${e.slug.split('/').pop()}`} class="list-item">
+        <a href={`/ai/${e.slug.split('/').pop()}`} class="list-item">
           <span class="list-item-num">0{i+1}</span>
           <div class="list-item-body">
             <p class="list-item-title">{e.data.title}</p>

@@ -2,45 +2,66 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const allArticles = await getCollection('articles');
-const sorted = allArticles.sort((a, b) =>
-  b.data.pubDate.getTime() - a.data.pubDate.getTime()
-);
+const all = await getCollection('articles');
+const sorted = all.sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const featured = sorted[0];
+const rest = sorted.slice(1,7);
+
+const tagClass = (c: string) => ({ seo:'tag-seo', ai:'tag-ai', llm:'tag-llm' }[c] ?? '');
+const slugFor = (e: typeof featured) => `/${e.data.category}/${e.slug.split('/').pop()}`;
 ---
-<BaseLayout
-  title="SyntheRank Corpus — AI Knowledge Base"
-  description="Structured, high-density knowledge base for AI crawlers and B2B researchers. Authoritative articles on SEO, AI, and LLM technologies."
->
-  <div class="page-header">
-    <p class="label">SyntheRank / Corpus Station</p>
-    <h1>Structured Knowledge<br />for the AI Era</h1>
-    <p>High-density, machine-readable articles on SEO, AI systems, and large language models. Built for Googlebot, GPTBot, ClaudeBot, and industry researchers.</p>
+<BaseLayout title="Zero Click Journal — AI Knowledge Base" description="High-density structured articles on SEO, AI systems, and LLM technology. Written for AI crawlers and B2B researchers.">
+
+  <!-- HERO -->
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-eyebrow">Live corpus for AI crawlers</div>
+      <h1>The journal that<br /><em>answers before you click</em></h1>
+      <p>Dense, structured, machine-readable knowledge on SEO, AI systems, and large language models — built for Googlebot, GPTBot, ClaudeBot, and industry researchers.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">{all.length}</span><span class="stat-label">Articles published</span></div>
+        <div class="stat"><span class="stat-num">3</span><span class="stat-label">Topic categories</span></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Open to all crawlers</span></div>
+      </div>
+    </section>
   </div>
 
-  <div class="content-area">
-    <div>
-      <ul class="article-list">
-        {sorted.map(entry => (
-          <li>
-            <p class="item-category">{entry.data.category}</p>
-            <p class="item-title">
-              <a href={`/${entry.data.category}/${entry.slug.split('/').pop()}`}>
-                {entry.data.title}
-              </a>
-            </p>
-            <p class="item-desc">{entry.data.description}</p>
-            <p class="item-date">{entry.data.pubDate.toISOString().slice(0, 10)}</p>
-          </li>
+  <!-- LATEST -->
+  <div class="wrap">
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Latest Articles</h2>
+        <a href="/seo" class="section-link">Browse all →</a>
+      </div>
+      <div class="card-grid">
+        {featured && (
+          <a href={slugFor(featured)} class="card card-featured">
+            <div class="card-top">
+              <span class={`tag ${tagClass(featured.data.category)}`}>{featured.data.category}</span>
+            </div>
+            <p class="card-title">{featured.data.title}</p>
+            <p class="card-desc">{featured.data.description}</p>
+            <div class="card-footer">
+              <span class="card-date">{featured.data.pubDate.toISOString().slice(0,10)}</span>
+              <span class="card-arrow">→</span>
+            </div>
+          </a>
+        )}
+        {rest.map(e => (
+          <a href={slugFor(e)} class="card">
+            <div class="card-top">
+              <span class={`tag ${tagClass(e.data.category)}`}>{e.data.category}</span>
+            </div>
+            <p class="card-title">{e.data.title}</p>
+            <p class="card-desc">{e.data.description}</p>
+            <div class="card-footer">
+              <span class="card-date">{e.data.pubDate.toISOString().slice(0,10)}</span>
+              <span class="card-arrow">→</span>
+            </div>
+          </a>
         ))}
-      </ul>
-    </div>
-    <aside>
-      <p class="toc-title">Categories</p>
-      <ul class="toc-list">
-        <li><a href="/seo">SEO &amp; GEO</a></li>
-        <li><a href="/ai">AI Systems</a></li>
-        <li><a href="/llm">LLM Technology</a></li>
-      </ul>
-    </aside>
+      </div>
+    </section>
   </div>
+
 </BaseLayout>
