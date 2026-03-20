@@ -1,22 +1,20 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import type { CollectionEntry } from 'astro:content';
-
-export interface Props {
-  entry: CollectionEntry<'articles'>;
-}
+export interface Props { entry: CollectionEntry<'articles'>; }
 const { entry } = Astro.props;
 const { title, description, category, pubDate, modDate, isFAQ, faqItems, toc } = entry.data;
-const tagClass = { seo: 'tag-seo', ai: 'tag-ai', llm: 'tag-llm' }[category];
+const tagClass = { seo:'tag-health', ai:'tag-tech', llm:'tag-llm' }[category] ?? 'tag-deep';
+const tagLabel = { seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[category] ?? category;
 ---
 <BaseLayout title={title} description={description} pubDate={pubDate} modDate={modDate} isFAQ={isFAQ} faqItems={faqItems}>
   <div class="wrap">
-    <div class="article-layout">
+    <div class="article-wrap">
       <article>
         <div class="article-header">
-          <div class="meta">
-            <a href={`/${category}`} class={`tag ${tagClass}`}>{category}</a>
-            {pubDate && <span class="date">{pubDate.toISOString().slice(0,10)}</span>}
+          <div class="article-meta">
+            <a href={`/${category}`} class={`tag ${tagClass}`}>{tagLabel}</a>
+            {pubDate && <span class="article-date">{pubDate.toISOString().slice(0,10)}</span>}
           </div>
           <h1>{title}</h1>
           <p class="article-desc">{description}</p>
@@ -34,12 +32,12 @@ const tagClass = { seo: 'tag-seo', ai: 'tag-ai', llm: 'tag-llm' }[category];
             </ul>
           </div>
         )}
-        <div class="sidebar-box" style="margin-top:16px">
+        <div class="sidebar-box" style="margin-top:14px">
           <p class="sidebar-title">Categories</p>
           <ul class="toc-list">
-            <li><a href="/seo">SEO &amp; GEO</a></li>
-            <li><a href="/ai">AI Systems</a></li>
-            <li><a href="/llm">LLM Technology</a></li>
+            <li><a href="/ai">AI & LLM</a></li>
+            <li><a href="/llm">Smart Hardware</a></li>
+            <li><a href="/seo">Digital Health</a></li>
           </ul>
         </div>
       </aside>

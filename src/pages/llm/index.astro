@@ -3,26 +3,25 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const articles = (await getCollection('articles', ({data}) => data.category === 'llm'))
   .sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const tagClass = '{'seo':'tag-health','ai':'tag-tech','llm':'tag-llm'}['llm'] ?? 'tag-deep'';
 ---
-<BaseLayout title="LLM Technology — Zero Click Journal" description="Technical documentation on large language models, training methods, and inference optimization.">
+<BaseLayout title="LLM Technology — Zero Click Journal" description="Precise documentation on language model training, inference, and deployment strategies.">
   <div class="wrap">
     <div class="cat-header">
-      <span class="tag tag-llm">LLM</span>
-      <h1>Large Language<br />Model Technology</h1>
-      <p>Precise technical documentation on LLM architecture, training methodology, and deployment strategies.</p>
+      <span class="tag tag-llm">LLM Technology</span>
+      <h1>LLM Technology</h1>
+      <p>Precise documentation on language model training, inference, and deployment strategies.</p>
     </div>
     <div class="article-list">
       {articles.map((e, i) => (
-        <a href={`/llm/${e.slug.split('/').pop()}`} class="list-item">
-          <span class="list-item-num">0{i+1}</span>
-          <div class="list-item-body">
-            <p class="list-item-title">{e.data.title}</p>
-            <p class="list-item-desc">{e.data.description}</p>
-            <div class="list-item-meta">
-              <span class="list-item-date">{e.data.pubDate.toISOString().slice(0,10)}</span>
-            </div>
+        <a href={`/llm/{e.slug.split('/').pop()}`} class="list-item">
+          <span class="list-num">{String(i+1).padStart(2,'0')}</span>
+          <div class="list-body">
+            <div class="list-title">{e.data.title}</div>
+            <div class="list-desc">{e.data.description}</div>
+            <div class="list-date">{e.data.pubDate.toISOString().slice(0,10)}</div>
           </div>
-          <span class="list-item-arrow">→</span>
+          <span class="list-arrow">→</span>
         </a>
       ))}
     </div>

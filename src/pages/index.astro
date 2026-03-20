@@ -5,94 +5,122 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const all = await getCollection('articles');
 const sorted = all.sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const hero = sorted[0];
-const featured2 = sorted[1];
-const grid = sorted.slice(2);
+const sub1 = sorted[1];
+const sub2 = sorted[2];
+const grid = sorted.slice(3, 7);
+const deep = sorted.slice(7);
 
 const slugFor = (e: typeof hero) => `/${e.data.category}/${e.slug.split('/').pop()}`;
-const tagClass = (c: string) => ({ seo:'tag-seo', ai:'tag-ai', llm:'tag-llm' }[c] ?? '');
-const tagLabel = (c: string) => ({ seo:'SEO & GEO', ai:'AI Systems', llm:'LLM' }[c] ?? c.toUpperCase());
----
-<BaseLayout title="Zero Click Journal — AI Knowledge Base" description="High-density structured articles on SEO, AI systems, and LLM technology. Written for AI crawlers and B2B researchers.">
 
-  <!-- ═══ HERO BANNER ═══ -->
-  <div class="hero-banner">
-    <a href={slugFor(hero)} class="hero-link">
-      <div class="hero-img-wrap">
-        <div class="hero-img-placeholder">
-          <div class="hero-pattern"></div>
-          <div class="hero-gradient"></div>
-        </div>
-        <div class="hero-overlay">
-          <div class="wrap">
+const thumbClass = (cat: string) => ({
+  seo: 'bg-health', ai: 'bg-tech', llm: 'bg-llm'
+}[cat] ?? 'bg-tech');
+
+const tagClass = (cat: string) => ({
+  seo: 'tag-health', ai: 'tag-tech', llm: 'tag-llm'
+}[cat] ?? 'tag-deep');
+
+const tagLabel = (cat: string) => ({
+  seo: 'Digital Health', ai: 'AI & LLM', llm: 'LLM'
+}[cat] ?? cat.toUpperCase());
+
+const heroColor = (cat: string) => ({
+  seo: 'c-teal', ai: 'c-blue', llm: 'c-blue'
+}[cat] ?? 'c-blue');
+---
+<BaseLayout
+  title="Zero Click Journal — AI & Healthcare Intelligence"
+  description="High-density structured knowledge at the intersection of AI and healthcare. Built for researchers, analysts, and AI crawlers.">
+
+  <!-- HERO MAIN -->
+  {hero && (
+    <a href={slugFor(hero)} style="display:block">
+      <div class="hero-main">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-inner">
             <span class={`tag ${tagClass(hero.data.category)}`}>{tagLabel(hero.data.category)}</span>
             <h1 class="hero-title">{hero.data.title}</h1>
             <p class="hero-desc">{hero.data.description}</p>
-            <span class="hero-date">{hero.data.pubDate.toISOString().slice(0,10)}</span>
+            <span class="hero-meta">{hero.data.pubDate.toISOString().slice(0,10)}</span>
           </div>
         </div>
       </div>
     </a>
-  </div>
+  )}
 
-  <!-- ═══ TOP 2 FEATURED ═══ -->
-  <div class="wrap">
-    <div class="duo-grid">
-      {featured2 && (
-        <a href={slugFor(featured2)} class="duo-card">
-          <div class="duo-img">
-            <div class="duo-pattern" style={`--hue:${featured2.data.category==='seo'?'160':featured2.data.category==='ai'?'250':'30'}`}></div>
-            <div class="duo-img-overlay"></div>
-          </div>
-          <div class="duo-body">
-            <span class={`tag ${tagClass(featured2.data.category)}`}>{tagLabel(featured2.data.category)}</span>
-            <h2 class="duo-title">{featured2.data.title}</h2>
-            <p class="duo-desc">{featured2.data.description}</p>
-            <span class="duo-date">{featured2.data.pubDate.toISOString().slice(0,10)}</span>
-          </div>
-        </a>
-      )}
-      <!-- Stats card -->
-      <div class="stats-card">
-        <div class="stats-eyebrow">Zero Click Journal</div>
-        <p class="stats-headline">The journal that answers<br/><em>before you click</em></p>
-        <div class="stats-row">
-          <div class="stat-item"><span class="stat-n">{all.length}</span><span class="stat-l">Articles</span></div>
-          <div class="stat-item"><span class="stat-n">3</span><span class="stat-l">Categories</span></div>
-          <div class="stat-item"><span class="stat-n">100%</span><span class="stat-l">Open crawlers</span></div>
+  <!-- HERO DUO -->
+  <div class="hero-duo">
+    {sub1 && (
+      <a href={slugFor(sub1)} class={`hero-s ${heroColor(sub1.data.category)}`}>
+        <div class="hero-s-overlay"></div>
+        <div class="hero-s-body">
+          <span class={`tag ${tagClass(sub1.data.category)}`}>{tagLabel(sub1.data.category)}</span>
+          <div class="hero-s-title">{sub1.data.title}</div>
+          <div class="hero-s-date">{sub1.data.pubDate.toISOString().slice(0,10)}</div>
         </div>
-        <div class="stats-tags">
-          <a href="/seo" class="stats-tag">SEO & GEO →</a>
-          <a href="/ai" class="stats-tag">AI Systems →</a>
-          <a href="/llm" class="stats-tag">LLM →</a>
+      </a>
+    )}
+    {sub2 && (
+      <a href={slugFor(sub2)} class={`hero-s ${heroColor(sub2.data.category)}`} style="background:linear-gradient(135deg,#134e4a,#0f9488)">
+        <div class="hero-s-overlay"></div>
+        <div class="hero-s-body">
+          <span class={`tag ${tagClass(sub2.data.category)}`}>{tagLabel(sub2.data.category)}</span>
+          <div class="hero-s-title">{sub2.data.title}</div>
+          <div class="hero-s-date">{sub2.data.pubDate.toISOString().slice(0,10)}</div>
+        </div>
+      </a>
+    )}
+  </div>
+
+  <div class="wrap">
+
+    <!-- CARD GRID -->
+    {grid.length > 0 && (
+      <div class="section">
+        <div class="section-head">
+          <span class="section-label">Latest Articles</span>
+          <div class="section-line"></div>
+          <a href="/seo" class="section-more">View all →</a>
+        </div>
+        <div class="card-grid">
+          {grid.map(e => (
+            <a href={slugFor(e)} class="card">
+              <div class={`card-thumb ${thumbClass(e.data.category)}`}>
+                <span class={`tag card-thumb-tag ${tagClass(e.data.category)}`}>{tagLabel(e.data.category)}</span>
+              </div>
+              <div class="card-title">{e.data.title}</div>
+              <div class="card-date">{e.data.pubDate.toISOString().slice(0,10)}</div>
+            </a>
+          ))}
         </div>
       </div>
-    </div>
-  </div>
+    )}
 
-  <!-- ═══ SECTION: LATEST ═══ -->
-  <div class="wrap">
-    <div class="section-block">
-      <div class="section-head">
-        <h2 class="section-label">Latest Articles</h2>
-        <div class="section-line"></div>
+    <!-- DEEP DIVES -->
+    {deep.length > 0 && (
+      <div class="section" style="padding-top:0">
+        <div class="section-head">
+          <span class="section-label">Deep Dives</span>
+          <div class="section-line"></div>
+        </div>
+        <div class="deep-section">
+          <div class="feat-list">
+            {deep.map((e, i) => (
+              <a href={slugFor(e)} class="feat-item">
+                <span class="feat-num">0{i+1}</span>
+                <div class="feat-body">
+                  <span class={`tag ${tagClass(e.data.category)}`}>{tagLabel(e.data.category)}</span>
+                  <div class="feat-title">{e.data.title}</div>
+                  <div class="feat-desc">{e.data.description}</div>
+                  <div class="feat-date">{e.data.pubDate.toISOString().slice(0,10)}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
-      <div class="mag-grid">
-        {grid.map((e, i) => (
-          <a href={slugFor(e)} class={`mag-card ${i===0?'mag-card-wide':''}`}>
-            <div class="mag-img">
-              <div class="mag-pattern" style={`--hue:${e.data.category==='seo'?'160':e.data.category==='ai'?'250':'30'};--i:${i}`}></div>
-              <div class="mag-img-overlay"></div>
-              <span class={`mag-tag tag ${tagClass(e.data.category)}`}>{tagLabel(e.data.category)}</span>
-            </div>
-            <div class="mag-body">
-              <h3 class="mag-title">{e.data.title}</h3>
-              <p class="mag-desc">{e.data.description}</p>
-              <span class="mag-date">{e.data.pubDate.toISOString().slice(0,10)}</span>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </div>
+    )}
 
+  </div>
 </BaseLayout>
