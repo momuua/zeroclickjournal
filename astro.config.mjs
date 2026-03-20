@@ -3,13 +3,10 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://zeroclickjournal.com', // ← 替换为你的阿里云域名
+  site: 'https://zeroclickjournal.com',
   integrations: [
     mdx(),
-    sitemap({
-      changefreq: 'weekly',
-      priority: 0.8,
-    }),
+    sitemap(),
   ],
   markdown: {
     syntaxHighlight: 'shiki',
