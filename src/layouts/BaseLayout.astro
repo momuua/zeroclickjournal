@@ -1,0 +1,123 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  pubDate?: Date;
+  modDate?: Date;
+  isFAQ?: boolean;
+  faqItems?: { question: string; answer: string }[];
+}
+const { title, description, pubDate, modDate, isFAQ = false, faqItems = [] } = Astro.props;
+const siteUrl = 'https://zeroclickjournal.com';
+const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "url": canonicalURL.toString(),
+  "publisher": { "@type": "Organization", "name": "SyntheRank", "url": siteUrl },
+  ...(pubDate && { "datePublished": pubDate.toISOString() }),
+  ...(modDate && { "dateModified": modDate.toISOString() }),
+};
+const faqSchema = isFAQ && faqItems.length > 0 ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqItems.map(item => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+  }))
+} : null;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+  <title>{title} — SyntheRank Corpus</title>
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:type" content="article" />
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--bg:#fff;--bg-subtle:#f6f6f6;--border:#e2e2e2;--text:#111;--text-muted:#666;--accent:#0057ff;--code-bg:#f0f0f0;--font-mono:'JetBrains Mono',monospace;--font-sans:'IBM Plex Sans',system-ui,sans-serif}
+    @media(prefers-color-scheme:dark){:root{--bg:#0d0d0d;--bg-subtle:#161616;--border:#2a2a2a;--text:#e8e8e8;--text-muted:#888;--accent:#4d8aff;--code-bg:#1a1a1a}}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-family:var(--font-sans);background:var(--bg);color:var(--text);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+    .site-wrapper{max-width:1040px;margin:0 auto;padding:0 24px}
+    header{border-bottom:1px solid var(--border);padding:16px 0}
+    header .inner{display:flex;align-items:center;justify-content:space-between}
+    .logo{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--text);text-decoration:none}
+    .logo span{color:var(--accent)}
+    nav{display:flex;gap:20px}
+    nav a{font-size:13px;color:var(--text-muted);text-decoration:none;font-family:var(--font-mono)}
+    nav a:hover{color:var(--accent)}
+    .content-area{display:grid;grid-template-columns:1fr 220px;gap:48px;padding:48px 0 80px;align-items:start}
+    @media(max-width:768px){.content-area{grid-template-columns:1fr}aside{display:none}}
+    article{min-width:0}
+    .article-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap}
+    .article-meta a{color:var(--accent);text-decoration:none}
+    article h1{font-size:clamp(22px,3vw,32px);font-weight:700;line-height:1.25;letter-spacing:-.02em;margin-bottom:12px}
+    .article-desc{font-size:16px;color:var(--text-muted);margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+    article h2{font-size:20px;font-weight:600;margin:36px 0 12px;letter-spacing:-.015em}
+    article h3{font-size:17px;font-weight:600;margin:28px 0 8px}
+    article p{margin-bottom:16px}
+    article a{color:var(--accent)}
+    article ul,article ol{padding-left:24px;margin-bottom:16px}
+    article li{margin-bottom:6px}
+    article blockquote{border-left:3px solid var(--accent);padding:2px 0 2px 16px;margin:20px 0;color:var(--text-muted);font-style:italic}
+    article code{font-family:var(--font-mono);font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:3px}
+    article pre{background:var(--code-bg);border:1px solid var(--border);border-radius:6px;padding:20px;overflow-x:auto;margin:20px 0}
+    article pre code{background:none;padding:0}
+    article table{width:100%;border-collapse:collapse;font-size:14px;margin:20px 0}
+    article th{background:var(--bg-subtle);border:1px solid var(--border);padding:8px 12px;text-align:left;font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+    article td{border:1px solid var(--border);padding:8px 12px}
+    article img{max-width:100%;height:auto;border:1px solid var(--border);border-radius:4px}
+    aside{position:sticky;top:32px;font-size:13px}
+    .toc-title{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px}
+    .toc-list{list-style:none;border-left:1px solid var(--border)}
+    .toc-list li a{display:block;padding:4px 12px;color:var(--text-muted);text-decoration:none;line-height:1.4}
+    .toc-list li a:hover{color:var(--accent)}
+    footer{border-top:1px solid var(--border);padding:24px 0;font-family:var(--font-mono);font-size:12px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .page-header{padding:40px 0 32px;border-bottom:1px solid var(--border)}
+    .page-header .label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:8px}
+    .page-header h1{font-size:clamp(24px,4vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.2}
+    .page-header p{color:var(--text-muted);margin-top:10px;font-size:15px;max-width:560px}
+    .article-list{list-style:none}
+    .article-list li{border-bottom:1px solid var(--border);padding:20px 0}
+    .article-list li:first-child{border-top:1px solid var(--border)}
+    .article-list .item-category{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:4px}
+    .article-list .item-title{font-size:17px;font-weight:600}
+    .article-list .item-title a{color:var(--text);text-decoration:none}
+    .article-list .item-title a:hover{color:var(--accent)}
+    .article-list .item-desc{font-size:14px;color:var(--text-muted);margin-top:4px}
+    .article-list .item-date{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);margin-top:6px}
+  </style>
+</head>
+<body>
+<div class="site-wrapper">
+  <header>
+    <div class="inner">
+      <a href="/" class="logo">SyntheRank<span>/</span>corpus</a>
+      <nav>
+        <a href="/seo">SEO</a>
+        <a href="/ai">AI</a>
+        <a href="/llm">LLM</a>
+      </nav>
+    </div>
+  </header>
+  <slot />
+  <footer>
+    <span>SyntheRank Corpus Station — Structured Knowledge for AI Crawlers</span>
+    <span>© {new Date().getFullYear()} SyntheRank</span>
+  </footer>
+</div>
+</body>
+</html>

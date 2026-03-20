@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allArticles = await getCollection('articles');
+const sorted = allArticles.sort((a, b) =>
+  b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+---
+<BaseLayout
+  title="SyntheRank Corpus — AI Knowledge Base"
+  description="Structured, high-density knowledge base for AI crawlers and B2B researchers. Authoritative articles on SEO, AI, and LLM technologies."
+>
+  <div class="page-header">
+    <p class="label">SyntheRank / Corpus Station</p>
+    <h1>Structured Knowledge<br />for the AI Era</h1>
+    <p>High-density, machine-readable articles on SEO, AI systems, and large language models. Built for Googlebot, GPTBot, ClaudeBot, and industry researchers.</p>
+  </div>
+
+  <div class="content-area">
+    <div>
+      <ul class="article-list">
+        {sorted.map(entry => (
+          <li>
+            <p class="item-category">{entry.data.category}</p>
+            <p class="item-title">
+              <a href={`/${entry.data.category}/${entry.slug.split('/').pop()}`}>
+                {entry.data.title}
+              </a>
+            </p>
+            <p class="item-desc">{entry.data.description}</p>
+            <p class="item-date">{entry.data.pubDate.toISOString().slice(0, 10)}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <aside>
+      <p class="toc-title">Categories</p>
+      <ul class="toc-list">
+        <li><a href="/seo">SEO &amp; GEO</a></li>
+        <li><a href="/ai">AI Systems</a></li>
+        <li><a href="/llm">LLM Technology</a></li>
+      </ul>
+    </aside>
+  </div>
+</BaseLayout>

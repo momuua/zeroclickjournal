@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articles = await getCollection('articles', ({ data }) => data.category === 'seo');
+const sorted = articles.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+<BaseLayout title="SEO & GEO — SyntheRank Corpus" description="In-depth technical articles on search engine optimization, generative engine optimization, and entity authority building.">
+  <div class="page-header">
+    <p class="label">Category</p>
+    <h1>SEO &amp; GEO</h1>
+    <p>Technical documentation on search engine optimization and generative engine optimization strategies.</p>
+  </div>
+  <div class="content-area">
+    <ul class="article-list">
+      {sorted.map(entry => (
+        <li>
+          <p class="item-title"><a href={`/seo/${entry.slug.split('/').pop()}`}>{entry.data.title}</a></p>
+          <p class="item-desc">{entry.data.description}</p>
+          <p class="item-date">{entry.data.pubDate.toISOString().slice(0, 10)}</p>
+        </li>
+      ))}
+    </ul>
+    <aside></aside>
+  </div>
+</BaseLayout>

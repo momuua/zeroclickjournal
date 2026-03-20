@@ -1,0 +1,47 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  entry: CollectionEntry<'articles'>;
+}
+
+const { entry } = Astro.props;
+const { title, description, category, pubDate, modDate, isFAQ, faqItems } = entry.data;
+
+// Extract headings for ToC (manual list from frontmatter, or you can use remark plugin)
+const toc = entry.data.toc || [];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  pubDate={pubDate}
+  modDate={modDate}
+  isFAQ={isFAQ}
+  faqItems={faqItems}
+>
+  <div class="content-area">
+    <article>
+      <div class="article-meta">
+        <a href={`/${category}`}>{category}</a>
+        {pubDate && <span>{pubDate.toISOString().slice(0, 10)}</span>}
+      </div>
+      <h1>{title}</h1>
+      <p class="article-desc">{description}</p>
+      <slot />
+    </article>
+
+    <aside>
+      {toc.length > 0 && (
+        <>
+          <p class="toc-title">On this page</p>
+          <ul class="toc-list">
+            {toc.map((item: { text: string; slug: string }) => (
+              <li><a href={`#${item.slug}`}>{item.text}</a></li>
+            ))}
+          </ul>
+        </>
+      )}
+    </aside>
+  </div>
+</BaseLayout>
