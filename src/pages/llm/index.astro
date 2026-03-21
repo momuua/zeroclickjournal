@@ -3,9 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const articles = (await getCollection('articles', ({data}) => data.category === 'llm'))
   .sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-const tagClass = '{'seo':'tag-health','ai':'tag-tech','llm':'tag-llm'}['llm'] ?? 'tag-deep'';
 ---
-<BaseLayout title="LLM Technology — Zero Click Journal" description="Precise documentation on language model training, inference, and deployment strategies.">
+<BaseLayout title="LLM Technology - Zero Click Journal" description="Language model training, inference, and deployment.">
   <div class="wrap">
     <div class="cat-header">
       <span class="tag tag-llm">LLM Technology</span>
@@ -14,7 +13,7 @@ const tagClass = '{'seo':'tag-health','ai':'tag-tech','llm':'tag-llm'}['llm'] ??
     </div>
     <div class="article-list">
       {articles.map((e, i) => (
-        <a href={`/llm/{e.slug.split('/').pop()}`} class="list-item">
+        <a href={`/llm/${e.slug.split('/').pop()}`} class="list-item">
           <span class="list-num">{String(i+1).padStart(2,'0')}</span>
           <div class="list-body">
             <div class="list-title">{e.data.title}</div>

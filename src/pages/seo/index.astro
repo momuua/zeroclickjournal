@@ -3,9 +3,8 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const articles = (await getCollection('articles', ({data}) => data.category === 'seo'))
   .sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-const tagClass = '{'seo':'tag-health','ai':'tag-tech','llm':'tag-llm'}['seo'] ?? 'tag-deep'';
 ---
-<BaseLayout title="Digital Health — Zero Click Journal" description="In-depth coverage of AI-powered diagnostics, digital therapeutics, and healthcare technology.">
+<BaseLayout title="Digital Health - Zero Click Journal" description="AI-powered diagnostics and healthcare technology.">
   <div class="wrap">
     <div class="cat-header">
       <span class="tag tag-health">Digital Health</span>
@@ -14,7 +13,7 @@ const tagClass = '{'seo':'tag-health','ai':'tag-tech','llm':'tag-llm'}['seo'] ??
     </div>
     <div class="article-list">
       {articles.map((e, i) => (
-        <a href={`/seo/{e.slug.split('/').pop()}`} class="list-item">
+        <a href={`/seo/${e.slug.split('/').pop()}`} class="list-item">
           <span class="list-num">{String(i+1).padStart(2,'0')}</span>
           <div class="list-body">
             <div class="list-title">{e.data.title}</div>
