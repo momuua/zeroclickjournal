@@ -67,7 +67,7 @@ The companies struggling are those that entered the region during the post-COVID
 
 Thirty days in, the primary costs are logistics, insurance, and management bandwidth. Most companies in the Gulf states are absorbing these as elevated operating expenses, not existential threats.
 
-At 90 days, the picture depends entirely on whether the conflict remains geographically contained. If it expands to involve the Strait of Hormuz — which handles 21% of global petroleum liquids according to the U.S. Energy Information Administration — the scenario changes from elevated operating costs to fundamental supply chain architecture review.
+At 90 days, the picture depends entirely on whether the conflict remains geographically contained. If it expands to involve the Strait of Hormuz — which handles 21% of global petroleum liquids according to the U.S. Energy Information Administration — the scenario changes from "elevated operating costs" to "fundamental supply chain architecture review."
 
 Long term, the structural shifts already underway — Gulf state economic diversification, non-oil FDI growth, digital infrastructure investment — are not reversing. The region's medium-term investment case remains intact for companies with the risk tolerance and operational capacity to manage through conflict cycles.
 
