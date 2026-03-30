@@ -1,7 +1,7 @@
-pubDate: 2026-03-30---
+---
 title: "What 30 Days of Middle East Conflict Means for Companies Still Operating There"
 description: "From Red Sea rerouting to war-risk insurance spikes, here is what international businesses operating in the Middle East are actually dealing with right now."
-pubDate: 2025-03-30
+pubDate: 2026-03-30
 author: "ZCJ Editorial"
 tags: ["middle-east", "geopolitical-risk", "international-business", "red-sea", "business-continuity"]
 draft: false
