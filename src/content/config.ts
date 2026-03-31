@@ -5,7 +5,7 @@ const articles = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    category: z.enum(['seo', 'ai', 'llm']),
+    category: z.enum(['seo', 'ai', 'llm', 'geopolitics']),
     pubDate: z.date(),
     modDate: z.date().optional(),
     isFAQ: z.boolean().default(false),
@@ -21,3 +21,22 @@ const articles = defineCollection({
 });
 
 export const collections = { articles };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
