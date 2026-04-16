@@ -1,7 +1,7 @@
 ---
 title: "30 Days of Conflict: What the Middle East War Means for International Business Operations"
 description: "One month into escalating conflict, multinational corporations are managing unprecedented operational crises. Analysis of Hormuz, logistics collapse, insurance crisis, and global trade implications."
-category: "geopolitics"
+category: ai
 pubDate: 2026-03-31
 ---
 
