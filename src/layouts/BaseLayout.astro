@@ -38,17 +38,14 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalURL} />
   <title>{title} — Zero Click Journal</title>
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:url" content={canonicalURL} />
-  <meta property="og:type" content="article" />
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
-  <style>
+  <style is:global>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#efefeb;color:#111;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
     a{color:inherit;text-decoration:none}
     .mono{font-family:'Courier New',Courier,monospace}
+
     .site-header{background:#111;padding:0 24px}
     .hdr-inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:46px;gap:16px}
     .logo{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -59,26 +56,32 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
     .main-nav a:hover{color:#fff;background:#222}
     .hdr-stat{font-size:11px;color:#555;font-family:'Courier New',monospace;flex-shrink:0}
     @media(max-width:700px){.main-nav{display:none}.hdr-stat{display:none}}
+
     .ticker{background:#ff6b35;padding:7px 24px;font-size:11px;color:#fff;font-weight:600;letter-spacing:.05em;display:flex;align-items:center;gap:10px}
     .ticker-badge{background:#fff;color:#ff6b35;padding:1px 6px;font-size:9px;font-weight:800;border-radius:2px;letter-spacing:.08em;flex-shrink:0}
+
     .card{background:#fff;border:1px solid #ddd}
     .card-head{padding:10px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
     .card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#111}
     .card-cnt{font-size:10px;color:#bbb;font-family:'Courier New',monospace}
+
     .tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border-radius:2px}
     .tag-ai{background:#111;color:#fff}
     .tag-llm{background:#6d28d9;color:#fff}
     .tag-seo{background:#0f766e;color:#fff}
+
     .home-body{padding:16px 24px 48px;background:#efefeb}
     .home-grid{display:grid;grid-template-columns:1fr 280px;gap:16px;max-width:1060px;margin:0 auto}
     @media(max-width:800px){.home-grid{grid-template-columns:1fr}}
+
     .hero-in{padding:24px}
     .hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff6b35;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-family:'Courier New',monospace}
     .hero-eyebrow::before{content:'';width:18px;height:2px;background:#ff6b35;display:inline-block;flex-shrink:0}
     .hero-title{font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.02em;color:#111;margin-bottom:10px}
     .hero-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}
     .hero-meta{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em}
-    .art-row{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #f2f2f2;cursor:pointer;transition:background .1s}
+
+    .art-row{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #f2f2f2;transition:background .1s}
     .art-row:last-child{border-bottom:none}
     .art-row:hover{background:#fafaf8}
     .art-num{font-size:11px;color:#ccc;min-width:20px;padding-top:1px;font-family:'Courier New',monospace;flex-shrink:0}
@@ -86,17 +89,19 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
     .art-title{font-size:13px;font-weight:600;color:#111;line-height:1.35;margin-bottom:3px;margin-top:4px}
     .art-desc{font-size:11px;color:#888;line-height:1.5;margin-bottom:4px}
     .art-date{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+
     .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
     .stat-item{padding:14px;text-align:center;border-right:1px solid #f0f0f0}
     .stat-item:last-child{border-right:none}
     .stat-n{display:block;font-size:20px;font-weight:800;color:#111;font-family:'Courier New',monospace}
     .stat-l{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#bbb;margin-top:2px}
-    .side-item{padding:12px 14px;border-bottom:1px solid #f2f2f2;cursor:pointer}
+    .side-item{padding:12px 14px;border-bottom:1px solid #f2f2f2;display:block}
     .side-item:last-child{border-bottom:none}
     .side-item:hover{background:#fafaf8}
     .side-title{font-size:13px;font-weight:600;color:#111;margin-bottom:2px}
     .side-meta{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
     .about-text{padding:14px;font-size:12px;color:#666;line-height:1.65}
+
     .article-body{padding:16px 24px 48px;background:#efefeb}
     .article-grid{display:grid;grid-template-columns:1fr 240px;gap:16px;max-width:1060px;margin:0 auto;align-items:start}
     @media(max-width:800px){.article-grid{grid-template-columns:1fr}.article-aside{display:none}}
@@ -107,6 +112,7 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
     h1.article-h1{font-size:26px;font-weight:800;line-height:1.2;letter-spacing:-.025em;color:#111;margin-bottom:12px}
     .article-lead{font-size:16px;color:#555;line-height:1.65;margin-bottom:12px;border-left:3px solid #ff6b35;padding-left:14px;font-style:italic}
     .article-dateline{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;padding-bottom:20px;border-bottom:1px solid #eee;margin-bottom:24px}
+
     .prose h2{font-size:18px;font-weight:800;color:#111;margin:30px 0 10px;padding-top:4px;border-top:2px solid #111;letter-spacing:-.01em}
     .prose h3{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin:18px 0 8px}
     .prose p{font-size:15px;color:#333;line-height:1.75;margin-bottom:16px}
@@ -122,6 +128,7 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
     .prose code{font-family:'Courier New',monospace;font-size:13px;background:#f5f5f0;padding:2px 6px;border-radius:3px;border:1px solid #e0e0e0}
     .prose pre{background:#111;border-radius:4px;padding:20px;overflow-x:auto;margin:20px 0}
     .prose pre code{background:none;border:none;padding:0;color:#e8e8e8}
+
     .article-aside{margin-top:0}
     .aside-block{background:#fff;border:1px solid #ddd;margin-bottom:2px;padding:14px}
     .aside-title{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#111;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #eee}
@@ -131,6 +138,7 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
     .toc-list a{font-size:12px;color:#666;display:flex;align-items:center;gap:7px;transition:color .15s}
     .toc-list a::before{content:'';width:8px;height:1px;background:#ccc;flex-shrink:0}
     .toc-list a:hover{color:#ff6b35}
+
     .site-footer{background:#111;padding:20px 24px}
     .ftr-inner{max-width:1060px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
     .ftr-logo{font-size:13px;font-weight:700;color:#fff}
@@ -139,12 +147,13 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
     .ftr-links a{font-size:11px;color:#555;transition:color .15s}
     .ftr-links a:hover{color:#fff}
     .ftr-copy{font-size:11px;color:#444;font-family:'Courier New',monospace}
+
     .cat-header{background:#fff;border:1px solid #ddd;padding:24px;margin-bottom:2px}
     .cat-label{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff6b35;margin-bottom:8px}
     .cat-h1{font-size:26px;font-weight:800;letter-spacing:-.025em;color:#111;margin-bottom:8px}
     .cat-desc{font-size:14px;color:#666;max-width:520px}
     .cat-list{background:#fff;border:1px solid #ddd}
-    .cat-item{display:flex;gap:14px;padding:14px;border-bottom:1px solid #f2f2f2;cursor:pointer;transition:background .1s}
+    .cat-item{display:flex;gap:14px;padding:14px;border-bottom:1px solid #f2f2f2;transition:background .1s}
     .cat-item:last-child{border-bottom:none}
     .cat-item:hover{background:#fafaf8}
     .cat-num{font-size:11px;color:#ccc;min-width:22px;padding-top:2px;font-family:'Courier New',monospace;flex-shrink:0}
