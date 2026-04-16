@@ -4,27 +4,29 @@ import type { CollectionEntry } from 'astro:content';
 export interface Props { entry: CollectionEntry<'articles'>; }
 const { entry } = Astro.props;
 const { title, description, category, pubDate, modDate, isFAQ, faqItems, toc } = entry.data;
-const tagClass = { seo:'tag-health', ai:'tag-tech', llm:'tag-llm' }[category] ?? 'tag-deep';
-const tagLabel = { seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[category] ?? category;
+const tagCls = { seo:'tag-seo', ai:'tag-ai', llm:'tag-llm' }[category] ?? 'tag-ai';
+const tagLbl = { seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[category] ?? category;
 ---
 <BaseLayout title={title} description={description} pubDate={pubDate} modDate={modDate} isFAQ={isFAQ} faqItems={faqItems}>
-  <div class="wrap">
-    <div class="article-wrap">
-      <article>
-        <div class="article-header">
-          <div class="article-meta">
-            <a href={`/${category}`} class={`tag ${tagClass}`}>{tagLabel}</a>
-            {pubDate && <span class="article-date">{pubDate.toISOString().slice(0,10)}</span>}
+  <div class="article-body">
+    <div class="article-grid">
+      <div>
+        <article class="article-main">
+          <div class="breadcrumb mono">
+            <a href="/">Home</a> /
+            <a href={`/${category}`}>{tagLbl}</a>
           </div>
-          <h1>{title}</h1>
-          <p class="article-desc">{description}</p>
-        </div>
-        <slot />
-      </article>
-      <aside class="article-sidebar">
+          <span class={`article-tag tag ${tagCls}`}>{tagLbl}</span>
+          <h1 class="article-h1">{title}</h1>
+          <p class="article-lead">{description}</p>
+          <div class="article-dateline mono">{pubDate && pubDate.toISOString().slice(0,10)} · zeroclickjournal.com</div>
+          <div class="prose"><slot /></div>
+        </article>
+      </div>
+      <aside class="article-aside">
         {toc && toc.length > 0 && (
-          <div class="sidebar-box">
-            <p class="sidebar-title">On this page</p>
+          <div class="aside-block">
+            <p class="aside-title mono">On this page</p>
             <ul class="toc-list">
               {toc.map((item: {text:string;slug:string}) => (
                 <li><a href={`#${item.slug}`}>{item.text}</a></li>
@@ -32,12 +34,12 @@ const tagLabel = { seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[category] ??
             </ul>
           </div>
         )}
-        <div class="sidebar-box" style="margin-top:14px">
-          <p class="sidebar-title">Categories</p>
+        <div class="aside-block" style="margin-top:2px">
+          <p class="aside-title mono">Categories</p>
           <ul class="toc-list">
             <li><a href="/ai">AI & LLM</a></li>
-            <li><a href="/llm">Smart Hardware</a></li>
             <li><a href="/seo">Digital Health</a></li>
+            <li><a href="/llm">LLM Technology</a></li>
           </ul>
         </div>
       </aside>

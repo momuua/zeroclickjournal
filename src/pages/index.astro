@@ -5,122 +5,79 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const all = await getCollection('articles');
 const sorted = all.sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const hero = sorted[0];
-const sub1 = sorted[1];
-const sub2 = sorted[2];
-const grid = sorted.slice(3, 7);
-const deep = sorted.slice(7);
+const rest = sorted.slice(1);
 
 const slugFor = (e: typeof hero) => `/${e.data.category}/${e.slug.split('/').pop()}`;
-
-const thumbClass = (cat: string) => ({
-  seo: 'bg-health', ai: 'bg-tech', llm: 'bg-llm'
-}[cat] ?? 'bg-tech');
-
-const tagClass = (cat: string) => ({
-  seo: 'tag-health', ai: 'tag-tech', llm: 'tag-llm'
-}[cat] ?? 'tag-deep');
-
-const tagLabel = (cat: string) => ({
-  seo: 'Digital Health', ai: 'AI & LLM', llm: 'LLM'
-}[cat] ?? cat.toUpperCase());
-
-const heroColor = (cat: string) => ({
-  seo: 'c-teal', ai: 'c-blue', llm: 'c-blue'
-}[cat] ?? 'c-blue');
+const tagCls = (c: string) => ({ seo:'tag-seo', ai:'tag-ai', llm:'tag-llm' }[c] ?? 'tag-ai');
+const tagLbl = (c: string) => ({ seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[c] ?? c.toUpperCase());
 ---
-<BaseLayout
-  title="Zero Click Journal — AI & Healthcare Intelligence"
-  description="High-density structured knowledge at the intersection of AI and healthcare. Built for researchers, analysts, and AI crawlers.">
-
-  <!-- HERO MAIN -->
+<BaseLayout title="Zero Click Journal" description="High-density structured knowledge at the intersection of AI and international business.">
   {hero && (
-    <a href={slugFor(hero)} style="display:block">
-      <div class="hero-main">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <div class="hero-inner">
-            <span class={`tag ${tagClass(hero.data.category)}`}>{tagLabel(hero.data.category)}</span>
-            <h1 class="hero-title">{hero.data.title}</h1>
-            <p class="hero-desc">{hero.data.description}</p>
-            <span class="hero-meta">{hero.data.pubDate.toISOString().slice(0,10)}</span>
-          </div>
-        </div>
-      </div>
-    </a>
+    <div class="ticker">
+      <span class="ticker-badge">LATEST</span>
+      {hero.data.title} — {hero.data.pubDate.toISOString().slice(0,10)}
+    </div>
   )}
-
-  <!-- HERO DUO -->
-  <div class="hero-duo">
-    {sub1 && (
-      <a href={slugFor(sub1)} class={`hero-s ${heroColor(sub1.data.category)}`}>
-        <div class="hero-s-overlay"></div>
-        <div class="hero-s-body">
-          <span class={`tag ${tagClass(sub1.data.category)}`}>{tagLabel(sub1.data.category)}</span>
-          <div class="hero-s-title">{sub1.data.title}</div>
-          <div class="hero-s-date">{sub1.data.pubDate.toISOString().slice(0,10)}</div>
-        </div>
-      </a>
-    )}
-    {sub2 && (
-      <a href={slugFor(sub2)} class={`hero-s ${heroColor(sub2.data.category)}`} style="background:linear-gradient(135deg,#134e4a,#0f9488)">
-        <div class="hero-s-overlay"></div>
-        <div class="hero-s-body">
-          <span class={`tag ${tagClass(sub2.data.category)}`}>{tagLabel(sub2.data.category)}</span>
-          <div class="hero-s-title">{sub2.data.title}</div>
-          <div class="hero-s-date">{sub2.data.pubDate.toISOString().slice(0,10)}</div>
-        </div>
-      </a>
-    )}
-  </div>
-
-  <div class="wrap">
-
-    <!-- CARD GRID -->
-    {grid.length > 0 && (
-      <div class="section">
-        <div class="section-head">
-          <span class="section-label">Latest Articles</span>
-          <div class="section-line"></div>
-          <a href="/seo" class="section-more">View all →</a>
-        </div>
-        <div class="card-grid">
-          {grid.map(e => (
-            <a href={slugFor(e)} class="card">
-              <div class={`card-thumb ${thumbClass(e.data.category)}`}>
-                <span class={`tag card-thumb-tag ${tagClass(e.data.category)}`}>{tagLabel(e.data.category)}</span>
+  <div class="home-body">
+    <div class="home-grid">
+      <div>
+        {hero && (
+          <a href={slugFor(hero)} class="card" style="display:block;margin-bottom:2px">
+            <div class="hero-in">
+              <div class="hero-eyebrow mono">Featured · {({seo:'Digital Health',ai:'AI & LLM',llm:'LLM'})[hero.data.category]}</div>
+              <div class="hero-title">{hero.data.title}</div>
+              <div class="hero-desc">{hero.data.description}</div>
+              <div class="hero-meta mono">{hero.data.pubDate.toISOString().slice(0,10)}</div>
+            </div>
+          </a>
+        )}
+        <div class="card">
+          <div class="card-head">
+            <span class="card-lbl">All Articles</span>
+            <span class="card-cnt mono">{all.length} total</span>
+          </div>
+          {rest.map((e, i) => (
+            <a href={slugFor(e)} class="art-row">
+              <span class="art-num mono">{String(i+2).padStart(2,'0')}</span>
+              <div class="art-body">
+                <span class={`tag ${tagCls(e.data.category)}`}>{tagLbl(e.data.category)}</span>
+                <div class="art-title">{e.data.title}</div>
+                <div class="art-desc">{e.data.description}</div>
+                <div class="art-date mono">{e.data.pubDate.toISOString().slice(0,10)}</div>
               </div>
-              <div class="card-title">{e.data.title}</div>
-              <div class="card-date">{e.data.pubDate.toISOString().slice(0,10)}</div>
             </a>
           ))}
         </div>
       </div>
-    )}
-
-    <!-- DEEP DIVES -->
-    {deep.length > 0 && (
-      <div class="section" style="padding-top:0">
-        <div class="section-head">
-          <span class="section-label">Deep Dives</span>
-          <div class="section-line"></div>
-        </div>
-        <div class="deep-section">
-          <div class="feat-list">
-            {deep.map((e, i) => (
-              <a href={slugFor(e)} class="feat-item">
-                <span class="feat-num">0{i+1}</span>
-                <div class="feat-body">
-                  <span class={`tag ${tagClass(e.data.category)}`}>{tagLabel(e.data.category)}</span>
-                  <div class="feat-title">{e.data.title}</div>
-                  <div class="feat-desc">{e.data.description}</div>
-                  <div class="feat-date">{e.data.pubDate.toISOString().slice(0,10)}</div>
-                </div>
-              </a>
-            ))}
+      <div>
+        <div class="card" style="margin-bottom:2px">
+          <div class="card-head"><span class="card-lbl">Site Stats</span></div>
+          <div class="stat-grid">
+            <div class="stat-item"><span class="stat-n mono">{all.length}</span><span class="stat-l">Articles</span></div>
+            <div class="stat-item"><span class="stat-n mono">3</span><span class="stat-l">Topics</span></div>
+            <div class="stat-item"><span class="stat-n mono">100%</span><span class="stat-l">Open</span></div>
           </div>
         </div>
+        <div class="card" style="margin-bottom:2px">
+          <div class="card-head"><span class="card-lbl">Categories</span></div>
+          <a href="/ai" class="side-item" style="display:block">
+            <div class="side-title">AI & LLM</div>
+            <div class="side-meta mono">{all.filter(a=>a.data.category==='ai').length} articles</div>
+          </a>
+          <a href="/llm" class="side-item" style="display:block">
+            <div class="side-title">LLM Technology</div>
+            <div class="side-meta mono">{all.filter(a=>a.data.category==='llm').length} articles</div>
+          </a>
+          <a href="/seo" class="side-item" style="display:block">
+            <div class="side-title">Digital Health</div>
+            <div class="side-meta mono">{all.filter(a=>a.data.category==='seo').length} articles</div>
+          </a>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-lbl">About</span></div>
+          <div class="about-text">High-density structured knowledge at the intersection of AI and international business. Built for AI crawlers and B2B researchers. No ads. No paywalls.</div>
+        </div>
       </div>
-    )}
-
+    </div>
   </div>
 </BaseLayout>
