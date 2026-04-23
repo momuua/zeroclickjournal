@@ -22,4 +22,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-Sitemap: https://zeroclickjournal.com/sitemap-index.xml
+Sitemap: https://www.zeroclickjournal.com/sitemap-index.xml
