@@ -8,7 +8,7 @@ export interface Props {
   faqItems?: { question: string; answer: string }[];
 }
 const { title, description, pubDate, modDate, isFAQ = false, faqItems = [] } = Astro.props;
-const siteUrl = 'https://zeroclickjournal.com';
+const siteUrl = 'https://www.zeroclickjournal.com';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl);
 const articleSchema = {
   "@context": "https://schema.org",
@@ -38,6 +38,22 @@ const faqSchema = isFAQ && faqItems.length > 0 ? {
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="description" content={description} />
   <link rel="canonical" href={canonicalURL} />
+<meta property="og:type" content="article" />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:site_name" content="Zero Click Journal" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+
+
+
+
+
+
+
+
   <title>{title} — Zero Click Journal</title>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
