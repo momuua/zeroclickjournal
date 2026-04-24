@@ -1,12 +1,18 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import type { CollectionEntry } from 'astro:content';
-export interface Props { entry: CollectionEntry<'articles'>; }
+
+export interface Props {
+  entry: CollectionEntry<'articles'>;
+}
+
 const { entry } = Astro.props;
 const { title, description, category, pubDate, modDate, isFAQ, faqItems, toc } = entry.data;
-const tagCls = { seo:'tag-seo', ai:'tag-ai', llm:'tag-llm' }[category] ?? 'tag-ai';
-const tagLbl = { seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[category] ?? category;
+
+const tagCls = { seo: 'tag-seo', ai: 'tag-ai', llm: 'tag-llm', business: 'tag-business' }[category] ?? 'tag-ai';
+const tagLbl = { seo: 'Digital Health', ai: 'AI & LLM', llm: 'LLM', business: 'Business' }[category] ?? category;
 ---
+
 <BaseLayout title={title} description={description} pubDate={pubDate} modDate={modDate} isFAQ={isFAQ} faqItems={faqItems}>
   <div class="article-body">
     <div class="article-grid">
@@ -40,9 +46,66 @@ const tagLbl = { seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[category] ?? c
             <li><a href="/ai">AI & LLM</a></li>
             <li><a href="/seo">Digital Health</a></li>
             <li><a href="/llm">LLM Technology</a></li>
+            <li><a href="/business">Business</a></li>
           </ul>
         </div>
       </aside>
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  .tag-business { background: #b45309; color: #fff; }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
