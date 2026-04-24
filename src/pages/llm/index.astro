@@ -1,10 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-const articles = (await getCollection('articles', ({data}) => data.category === 'llm'))
-  .sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const articles = (await getCollection('articles', ({ data }) => data.category === 'llm'))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
-<BaseLayout title="LLM Technology — Zero Click Journal" description="Precise documentation on language model training, inference, and deployment strategies.">
+<BaseLayout
+  title="LLM Technology"
+  description="Precise documentation on language model training, inference, and deployment strategies."
+  pageType="collection"
+>
   <div class="home-body">
     <div style="max-width:1060px;margin:0 auto">
       <div class="cat-header">
@@ -14,12 +19,12 @@ const articles = (await getCollection('articles', ({data}) => data.category === 
       </div>
       <div class="cat-list">
         {articles.map((e, i) => (
-          <a href={`/llm/${e.slug.split('/').pop()}`} class="cat-item">
-            <span class="cat-num mono">{String(i+1).padStart(2,'0')}</span>
+          <a href={`/llm/${e.slug.split('/').pop()}/`} class="cat-item">
+            <span class="cat-num mono">{String(i + 1).padStart(2, '0')}</span>
             <div class="cat-body">
               <div class="cat-title">{e.data.title}</div>
               <div class="cat-excerpt">{e.data.description}</div>
-              <div class="cat-date mono">{e.data.pubDate.toISOString().slice(0,10)}</div>
+              <div class="cat-date mono">{e.data.pubDate.toISOString().slice(0, 10)}</div>
             </div>
             <span class="cat-arrow">→</span>
           </a>
