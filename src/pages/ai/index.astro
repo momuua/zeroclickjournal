@@ -14,7 +14,7 @@ const articles = (await getCollection('articles', ({data}) => data.category === 
       </div>
       <div class="cat-list">
         {articles.map((e, i) => (
-          <a href={`/ai/{e.slug.split('/').pop()}`} class="cat-item">
+          <a href={`/ai/${e.slug.split('/.pop()}`} class="cat-item">
             <span class="cat-num mono">{String(i+1).padStart(2,'0')}</span>
             <div class="cat-body">
               <div class="cat-title">{e.data.title}</div>
