@@ -3,80 +3,101 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const all = await getCollection('articles');
-const sorted = all.sort((a,b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const sorted = all.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 const hero = sorted[0];
 const rest = sorted.slice(1);
 
-const slugFor = (e: typeof hero) => `/${e.data.category}/${e.slug.split('/').pop()}`;
-const tagCls = (c: string) => ({ seo:'tag-seo', ai:'tag-ai', llm:'tag-llm' }[c] ?? 'tag-ai');
-const tagLbl = (c: string) => ({ seo:'Digital Health', ai:'AI & LLM', llm:'LLM' }[c] ?? c.toUpperCase());
+const slugFor = (e: typeof hero) =>
+  `/${e.data.category}/${e.slug.split('/').pop()}/`;
+
+const tagCls = (c: string) =>
+  ({ seo: 'tag-seo', ai: 'tag-ai', llm: 'tag-llm', business: 'tag-business' }[c] ?? 'tag-ai');
+
+const tagLbl = (c: string) =>
+  ({ seo: 'Digital Health', ai: 'AI & LLM', llm: 'LLM', business: 'Business' }[c] ?? c.toUpperCase());
 ---
-<BaseLayout title="Zero Click Journal" description="High-density structured knowledge at the intersection of AI and international business.">
+<BaseLayout
+  title="Zero Click Journal"
+  description="High-density structured knowledge at the intersection of AI and international business."
+  pageType="website"
+>
   {hero && (
     <div class="ticker">
       <span class="ticker-badge">LATEST</span>
-      {hero.data.title} — {hero.data.pubDate.toISOString().slice(0,10)}
+      {hero.data.title} — {hero.data.pubDate.toISOString().slice(0, 10)}
     </div>
   )}
   <div class="home-body">
     <div class="home-grid">
       <div>
+        <header style="padding:8px 0 4px">
+          <h1 style="font-size:20px;font-weight:800;letter-spacing:-.02em;color:#111;margin-bottom:4px">
+            Zero Click Journal
+          </h1>
+          <p style="font-size:12px;color:#666;margin-bottom:10px">
+            High-density structured knowledge at the intersection of AI and international business.
+          </p>
+        </header>
         {hero && (
           <a href={slugFor(hero)} class="card" style="display:block;margin-bottom:2px">
             <div class="hero-in">
-              <div class="hero-eyebrow mono">Featured · {({seo:'Digital Health',ai:'AI & LLM',llm:'LLM'})[hero.data.category]}</div>
-              <div class="hero-title">{hero.data.title}</div>
+              <div class="hero-eyebrow mono">Featured · {tagLbl(hero.data.category)}</div>
+              <h2 class="hero-title">{hero.data.title}</h2>
               <div class="hero-desc">{hero.data.description}</div>
-              <div class="hero-meta mono">{hero.data.pubDate.toISOString().slice(0,10)}</div>
+              <div class="hero-meta mono">{hero.data.pubDate.toISOString().slice(0, 10)}</div>
             </div>
           </a>
         )}
-        <div class="card">
+        <section class="card" aria-labelledby="all-articles">
           <div class="card-head">
-            <span class="card-lbl">All Articles</span>
+            <h2 id="all-articles" class="card-lbl">All Articles</h2>
             <span class="card-cnt mono">{all.length} total</span>
           </div>
           {rest.map((e, i) => (
             <a href={slugFor(e)} class="art-row">
-              <span class="art-num mono">{String(i+2).padStart(2,'0')}</span>
+              <span class="art-num mono">{String(i + 2).padStart(2, '0')}</span>
               <div class="art-body">
                 <span class={`tag ${tagCls(e.data.category)}`}>{tagLbl(e.data.category)}</span>
                 <div class="art-title">{e.data.title}</div>
                 <div class="art-desc">{e.data.description}</div>
-                <div class="art-date mono">{e.data.pubDate.toISOString().slice(0,10)}</div>
+                <div class="art-date mono">{e.data.pubDate.toISOString().slice(0, 10)}</div>
               </div>
             </a>
           ))}
-        </div>
+        </section>
       </div>
       <div>
-        <div class="card" style="margin-bottom:2px">
-          <div class="card-head"><span class="card-lbl">Site Stats</span></div>
+        <section class="card" style="margin-bottom:2px" aria-labelledby="site-stats">
+          <div class="card-head"><h2 id="site-stats" class="card-lbl">Site Stats</h2></div>
           <div class="stat-grid">
             <div class="stat-item"><span class="stat-n mono">{all.length}</span><span class="stat-l">Articles</span></div>
-            <div class="stat-item"><span class="stat-n mono">3</span><span class="stat-l">Topics</span></div>
+            <div class="stat-item"><span class="stat-n mono">4</span><span class="stat-l">Topics</span></div>
             <div class="stat-item"><span class="stat-n mono">100%</span><span class="stat-l">Open</span></div>
           </div>
-        </div>
-        <div class="card" style="margin-bottom:2px">
-          <div class="card-head"><span class="card-lbl">Categories</span></div>
-          <a href="/ai" class="side-item" style="display:block">
+        </section>
+        <nav class="card" style="margin-bottom:2px" aria-labelledby="cat-nav">
+          <div class="card-head"><h2 id="cat-nav" class="card-lbl">Categories</h2></div>
+          <a href="/ai/" class="side-item" style="display:block">
             <div class="side-title">AI & LLM</div>
-            <div class="side-meta mono">{all.filter(a=>a.data.category==='ai').length} articles</div>
+            <div class="side-meta mono">{all.filter((a) => a.data.category === 'ai').length} articles</div>
           </a>
-          <a href="/llm" class="side-item" style="display:block">
+          <a href="/llm/" class="side-item" style="display:block">
             <div class="side-title">LLM Technology</div>
-            <div class="side-meta mono">{all.filter(a=>a.data.category==='llm').length} articles</div>
+            <div class="side-meta mono">{all.filter((a) => a.data.category === 'llm').length} articles</div>
           </a>
-          <a href="/seo" class="side-item" style="display:block">
+          <a href="/seo/" class="side-item" style="display:block">
             <div class="side-title">Digital Health</div>
-            <div class="side-meta mono">{all.filter(a=>a.data.category==='seo').length} articles</div>
+            <div class="side-meta mono">{all.filter((a) => a.data.category === 'seo').length} articles</div>
           </a>
-        </div>
-        <div class="card">
-          <div class="card-head"><span class="card-lbl">About</span></div>
+          <a href="/business/" class="side-item" style="display:block">
+            <div class="side-title">Business</div>
+            <div class="side-meta mono">{all.filter((a) => a.data.category === 'business').length} articles</div>
+          </a>
+        </nav>
+        <section class="card" aria-labelledby="about">
+          <div class="card-head"><h2 id="about" class="card-lbl">About</h2></div>
           <div class="about-text">High-density structured knowledge at the intersection of AI and international business. Built for AI crawlers and B2B researchers. No ads. No paywalls.</div>
-        </div>
+        </section>
       </div>
     </div>
   </div>
