@@ -7,212 +7,417 @@ export interface Props {
   isFAQ?: boolean;
   faqItems?: { question: string; answer: string }[];
 }
+
 const { title, description, pubDate, modDate, isFAQ = false, faqItems = [] } = Astro.props;
+
 const siteUrl = 'https://www.zeroclickjournal.com';
-const canonicalURL = new URL(Astro.url.pathname, siteUrl);
+
+// Build canonical URL with trailing slash
+let rawPath = Astro.url.pathname;
+if (!rawPath.endsWith('/')) rawPath = rawPath + '/';
+const canonicalURL = siteUrl + rawPath;
+
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": title,
   "description": description,
-  "url": canonicalURL.toString(),
-  "publisher": { "@type": "Organization", "name": "Zero Click Journal", "url": siteUrl },
+  "url": canonicalURL,
+  "publisher": {
+    "@type": "Organization",
+    "name": "Zero Click Journal",
+    "url": siteUrl
+  },
   ...(pubDate && { "datePublished": pubDate.toISOString() }),
   ...(modDate && { "dateModified": modDate.toISOString() }),
 };
+
 const faqSchema = isFAQ && faqItems.length > 0 ? {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": faqItems.map(item => ({
     "@type": "Question",
     "name": item.question,
-    "acceptedAnswer": { "@type": "Answer", "text": item.answer }
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
   }))
 } : null;
 ---
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="description" content={description} />
-  <link rel="canonical" href={canonicalURL} />
-<meta property="og:type" content="article" />
-<meta property="og:url" content={canonicalURL} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:site_name" content="Zero Click Journal" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-
-
-
-
-
-
-
-
-  <title>{title} — Zero Click Journal</title>
-  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
-  <style is:global>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#efefeb;color:#111;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
-    a{color:inherit;text-decoration:none}
-    .mono{font-family:'Courier New',Courier,monospace}
-
-    .site-header{background:#111;padding:0 24px}
-    .hdr-inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:46px;gap:16px}
-    .logo{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .logo-pill{background:#ff6b35;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:2px;letter-spacing:.05em;font-family:'Courier New',monospace}
-    .logo-accent{color:#ff6b35}
-    .main-nav{display:flex;gap:2px}
-    .main-nav a{font-size:12px;color:#777;padding:4px 10px;border-radius:3px;transition:color .15s,background .15s}
-    .main-nav a:hover{color:#fff;background:#222}
-    .hdr-stat{font-size:11px;color:#555;font-family:'Courier New',monospace;flex-shrink:0}
-    @media(max-width:700px){.main-nav{display:none}.hdr-stat{display:none}}
-
-    .ticker{background:#ff6b35;padding:7px 24px;font-size:11px;color:#fff;font-weight:600;letter-spacing:.05em;display:flex;align-items:center;gap:10px}
-    .ticker-badge{background:#fff;color:#ff6b35;padding:1px 6px;font-size:9px;font-weight:800;border-radius:2px;letter-spacing:.08em;flex-shrink:0}
-
-    .card{background:#fff;border:1px solid #ddd}
-    .card-head{padding:10px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
-    .card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#111}
-    .card-cnt{font-size:10px;color:#bbb;font-family:'Courier New',monospace}
-
-    .tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border-radius:2px}
-    .tag-ai{background:#111;color:#fff}
-    .tag-llm{background:#6d28d9;color:#fff}
-    .tag-seo{background:#0f766e;color:#fff}
-
-    .home-body{padding:16px 24px 48px;background:#efefeb}
-    .home-grid{display:grid;grid-template-columns:1fr 280px;gap:16px;max-width:1060px;margin:0 auto}
-    @media(max-width:800px){.home-grid{grid-template-columns:1fr}}
-
-    .hero-in{padding:24px}
-    .hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff6b35;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-family:'Courier New',monospace}
-    .hero-eyebrow::before{content:'';width:18px;height:2px;background:#ff6b35;display:inline-block;flex-shrink:0}
-    .hero-title{font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.02em;color:#111;margin-bottom:10px}
-    .hero-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}
-    .hero-meta{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em}
-
-    .art-row{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #f2f2f2;transition:background .1s}
-    .art-row:last-child{border-bottom:none}
-    .art-row:hover{background:#fafaf8}
-    .art-num{font-size:11px;color:#ccc;min-width:20px;padding-top:1px;font-family:'Courier New',monospace;flex-shrink:0}
-    .art-body{flex:1;min-width:0}
-    .art-title{font-size:13px;font-weight:600;color:#111;line-height:1.35;margin-bottom:3px;margin-top:4px}
-    .art-desc{font-size:11px;color:#888;line-height:1.5;margin-bottom:4px}
-    .art-date{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
-
-    .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
-    .stat-item{padding:14px;text-align:center;border-right:1px solid #f0f0f0}
-    .stat-item:last-child{border-right:none}
-    .stat-n{display:block;font-size:20px;font-weight:800;color:#111;font-family:'Courier New',monospace}
-    .stat-l{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#bbb;margin-top:2px}
-    .side-item{padding:12px 14px;border-bottom:1px solid #f2f2f2;display:block}
-    .side-item:last-child{border-bottom:none}
-    .side-item:hover{background:#fafaf8}
-    .side-title{font-size:13px;font-weight:600;color:#111;margin-bottom:2px}
-    .side-meta{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
-    .about-text{padding:14px;font-size:12px;color:#666;line-height:1.65}
-
-    .article-body{padding:16px 24px 48px;background:#efefeb}
-    .article-grid{display:grid;grid-template-columns:1fr 240px;gap:16px;max-width:1060px;margin:0 auto;align-items:start}
-    @media(max-width:800px){.article-grid{grid-template-columns:1fr}.article-aside{display:none}}
-    .article-main{background:#fff;border:1px solid #ddd;padding:28px 32px}
-    .breadcrumb{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-    .breadcrumb a{color:#ff6b35}
-    .article-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:2px;margin-bottom:12px}
-    h1.article-h1{font-size:26px;font-weight:800;line-height:1.2;letter-spacing:-.025em;color:#111;margin-bottom:12px}
-    .article-lead{font-size:16px;color:#555;line-height:1.65;margin-bottom:12px;border-left:3px solid #ff6b35;padding-left:14px;font-style:italic}
-    .article-dateline{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;padding-bottom:20px;border-bottom:1px solid #eee;margin-bottom:24px}
-
-    .prose h2{font-size:18px;font-weight:800;color:#111;margin:30px 0 10px;padding-top:4px;border-top:2px solid #111;letter-spacing:-.01em}
-    .prose h3{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin:18px 0 8px}
-    .prose p{font-size:15px;color:#333;line-height:1.75;margin-bottom:16px}
-    .prose strong{color:#111;font-weight:700}
-    .prose a{color:#ff6b35;border-bottom:1px solid rgba(255,107,53,.3)}
-    .prose ul,.prose ol{padding-left:22px;margin-bottom:16px}
-    .prose li{font-size:15px;color:#333;line-height:1.7;margin-bottom:5px}
-    .prose blockquote{border-left:3px solid #e0e0e0;padding:4px 0 4px 16px;margin:20px 0;color:#666;font-style:italic}
-    .prose table{width:100%;border-collapse:collapse;font-size:13px;margin:20px 0}
-    .prose th{background:#111;color:#fff;padding:8px 11px;text-align:left;font-family:'Courier New',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
-    .prose td{border:1px solid #e8e8e8;padding:8px 11px;color:#444}
-    .prose tr:nth-child(even) td{background:#fafaf8}
-    .prose code{font-family:'Courier New',monospace;font-size:13px;background:#f5f5f0;padding:2px 6px;border-radius:3px;border:1px solid #e0e0e0}
-    .prose pre{background:#111;border-radius:4px;padding:20px;overflow-x:auto;margin:20px 0}
-    .prose pre code{background:none;border:none;padding:0;color:#e8e8e8}
-
-    .article-aside{margin-top:0}
-    .aside-block{background:#fff;border:1px solid #ddd;margin-bottom:2px;padding:14px}
-    .aside-title{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#111;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #eee}
-    .toc-list{list-style:none}
-    .toc-list li{padding:5px 0;border-bottom:1px solid #f5f5f5}
-    .toc-list li:last-child{border-bottom:none}
-    .toc-list a{font-size:12px;color:#666;display:flex;align-items:center;gap:7px;transition:color .15s}
-    .toc-list a::before{content:'';width:8px;height:1px;background:#ccc;flex-shrink:0}
-    .toc-list a:hover{color:#ff6b35}
-
-    .site-footer{background:#111;padding:20px 24px}
-    .ftr-inner{max-width:1060px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-    .ftr-logo{font-size:13px;font-weight:700;color:#fff}
-    .ftr-logo span{color:#ff6b35}
-    .ftr-links{display:flex;gap:14px;flex-wrap:wrap}
-    .ftr-links a{font-size:11px;color:#555;transition:color .15s}
-    .ftr-links a:hover{color:#fff}
-    .ftr-copy{font-size:11px;color:#444;font-family:'Courier New',monospace}
-
-    .cat-header{background:#fff;border:1px solid #ddd;padding:24px;margin-bottom:2px}
-    .cat-label{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff6b35;margin-bottom:8px}
-    .cat-h1{font-size:26px;font-weight:800;letter-spacing:-.025em;color:#111;margin-bottom:8px}
-    .cat-desc{font-size:14px;color:#666;max-width:520px}
-    .cat-list{background:#fff;border:1px solid #ddd}
-    .cat-item{display:flex;gap:14px;padding:14px;border-bottom:1px solid #f2f2f2;transition:background .1s}
-    .cat-item:last-child{border-bottom:none}
-    .cat-item:hover{background:#fafaf8}
-    .cat-num{font-size:11px;color:#ccc;min-width:22px;padding-top:2px;font-family:'Courier New',monospace;flex-shrink:0}
-    .cat-body{flex:1}
-    .cat-title{font-size:14px;font-weight:600;color:#111;margin-bottom:4px;transition:color .15s}
-    .cat-item:hover .cat-title{color:#ff6b35}
-    .cat-excerpt{font-size:12px;color:#888;line-height:1.55;margin-bottom:5px}
-    .cat-date{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
-    .cat-arrow{font-size:16px;color:#ddd;align-self:center;transition:color .15s,transform .15s;flex-shrink:0}
-    .cat-item:hover .cat-arrow{color:#ff6b35;transform:translateX(3px)}
-  </style>
-</head>
-<body>
-<header class="site-header">
-  <div class="hdr-inner">
-    <a href="/" class="logo">
-      <span class="logo-pill">ZCJ</span>
-      Zero Click <span class="logo-accent">Journal</span>
-    </a>
-    <nav class="main-nav">
-      <a href="/ai">AI & LLM</a>
-      <a href="/seo">Digital Health</a>
-      <a href="/llm">LLM</a>
-      <a href="/business">Business</a>
-    </nav>
-    <span class="hdr-stat mono">open to all crawlers</span>
-  </div>
-</header>
-<slot />
-<footer class="site-footer">
-  <div class="ftr-inner">
-    <div class="ftr-logo">Zero Click <span>Journal</span></div>
-    <div class="ftr-links">
-      <a href="/ai">AI & LLM</a>
-      <a href="/seo">Digital Health</a>
-      <a href="/llm">LLM</a>
-      <a href="/robots.txt">robots.txt</a>
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
-    </div>
-    <span class="ftr-copy mono">© {new Date().getFullYear()} Zero Click Journal</span>
-  </div>
-</footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Zero Click Journal" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <title>{title} — Zero Click Journal</title>
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+    <style is:global>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      html{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#efefeb;color:#111;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+      a{color:inherit;text-decoration:none}
+      .mono{font-family:'Courier New',Courier,monospace}
+      .site-header{background:#111;padding:0 24px}
+      .hdr-inner{max-width:1060px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:46px;gap:16px}
+      .logo{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;flex-shrink:0}
+      .logo-pill{background:#ff6b35;color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:2px;letter-spacing:.05em;font-family:'Courier New',monospace}
+      .logo-accent{color:#ff6b35}
+      .main-nav{display:flex;gap:2px}
+      .main-nav a{font-size:12px;color:#777;padding:4px 10px;border-radius:3px;transition:color .15s,background .15s}
+      .main-nav a:hover{color:#fff;background:#222}
+      .hdr-stat{font-size:11px;color:#555;font-family:'Courier New',monospace;flex-shrink:0}
+      @media(max-width:700px){.main-nav{display:none}.hdr-stat{display:none}}
+      .ticker{background:#ff6b35;padding:7px 24px;font-size:11px;color:#fff;font-weight:600;letter-spacing:.05em;display:flex;align-items:center;gap:10px}
+      .ticker-badge{background:#fff;color:#ff6b35;padding:1px 6px;font-size:9px;font-weight:800;border-radius:2px;letter-spacing:.08em;flex-shrink:0}
+      .card{background:#fff;border:1px solid #ddd}
+      .card-head{padding:10px 14px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+      .card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#111}
+      .card-cnt{font-size:10px;color:#bbb;font-family:'Courier New',monospace}
+      .tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border-radius:2px}
+      .tag-ai{background:#111;color:#fff}
+      .tag-llm{background:#6d28d9;color:#fff}
+      .tag-seo{background:#0f766e;color:#fff}
+      .tag-business{background:#b45309;color:#fff}
+      .home-body{padding:16px 24px 48px;background:#efefeb}
+      .home-grid{display:grid;grid-template-columns:1fr 280px;gap:16px;max-width:1060px;margin:0 auto}
+      @media(max-width:800px){.home-grid{grid-template-columns:1fr}}
+      .hero-in{padding:24px}
+      .hero-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff6b35;margin-bottom:10px;display:flex;align-items:center;gap:8px;font-family:'Courier New',monospace}
+      .hero-eyebrow::before{content:'';width:18px;height:2px;background:#ff6b35;display:inline-block;flex-shrink:0}
+      .hero-title{font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.02em;color:#111;margin-bottom:10px}
+      .hero-desc{font-size:13px;color:#666;line-height:1.6;margin-bottom:12px}
+      .hero-meta{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em}
+      .art-row{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid #f2f2f2;transition:background .1s}
+      .art-row:last-child{border-bottom:none}
+      .art-row:hover{background:#fafaf8}
+      .art-num{font-size:11px;color:#ccc;min-width:20px;padding-top:1px;font-family:'Courier New',monospace;flex-shrink:0}
+      .art-body{flex:1;min-width:0}
+      .art-title{font-size:13px;font-weight:600;color:#111;line-height:1.35;margin-bottom:3px;margin-top:4px}
+      .art-desc{font-size:11px;color:#888;line-height:1.5;margin-bottom:4px}
+      .art-date{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+      .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+      .stat-item{padding:14px;text-align:center;border-right:1px solid #f0f0f0}
+      .stat-item:last-child{border-right:none}
+      .stat-n{display:block;font-size:20px;font-weight:800;color:#111;font-family:'Courier New',monospace}
+      .stat-l{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#bbb;margin-top:2px}
+      .side-item{padding:12px 14px;border-bottom:1px solid #f2f2f2;display:block}
+      .side-item:last-child{border-bottom:none}
+      .side-item:hover{background:#fafaf8}
+      .side-title{font-size:13px;font-weight:600;color:#111;margin-bottom:2px}
+      .side-meta{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+      .about-text{padding:14px;font-size:12px;color:#666;line-height:1.65}
+      .article-body{padding:16px 24px 48px;background:#efefeb}
+      .article-grid{display:grid;grid-template-columns:1fr 240px;gap:16px;max-width:1060px;margin:0 auto;align-items:start}
+      @media(max-width:800px){.article-grid{grid-template-columns:1fr}.article-aside{display:none}}
+      .article-main{background:#fff;border:1px solid #ddd;padding:28px 32px}
+      .breadcrumb{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+      .breadcrumb a{color:#ff6b35}
+      .article-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:2px;margin-bottom:12px}
+      h1.article-h1{font-size:26px;font-weight:800;line-height:1.2;letter-spacing:-.025em;color:#111;margin-bottom:12px}
+      .article-lead{font-size:16px;color:#555;line-height:1.65;margin-bottom:12px;border-left:3px solid #ff6b35;padding-left:14px;font-style:italic}
+      .article-dateline{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;padding-bottom:20px;border-bottom:1px solid #eee;margin-bottom:24px}
+      .prose h2{font-size:18px;font-weight:800;color:#111;margin:30px 0 10px;padding-top:4px;border-top:2px solid #111;letter-spacing:-.01em}
+      .prose h3{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#999;margin:18px 0 8px}
+      .prose p{font-size:15px;color:#333;line-height:1.75;margin-bottom:16px}
+      .prose strong{color:#111;font-weight:700}
+      .prose a{color:#ff6b35;border-bottom:1px solid rgba(255,107,53,.3)}
+      .prose ul,.prose ol{padding-left:22px;margin-bottom:16px}
+      .prose li{font-size:15px;color:#333;line-height:1.7;margin-bottom:5px}
+      .prose blockquote{border-left:3px solid #e0e0e0;padding:4px 0 4px 16px;margin:20px 0;color:#666;font-style:italic}
+      .prose table{width:100%;border-collapse:collapse;font-size:13px;margin:20px 0}
+      .prose th{background:#111;color:#fff;padding:8px 11px;text-align:left;font-family:'Courier New',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em}
+      .prose td{border:1px solid #e8e8e8;padding:8px 11px;color:#444}
+      .prose tr:nth-child(even) td{background:#fafaf8}
+      .prose code{font-family:'Courier New',monospace;font-size:13px;background:#f5f5f0;padding:2px 6px;border-radius:3px;border:1px solid #e0e0e0}
+      .prose pre{background:#111;border-radius:4px;padding:20px;overflow-x:auto;margin:20px 0}
+      .prose pre code{background:none;border:none;padding:0;color:#e8e8e8}
+      .article-aside{margin-top:0}
+      .aside-block{background:#fff;border:1px solid #ddd;margin-bottom:2px;padding:14px}
+      .aside-title{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#111;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #eee}
+      .toc-list{list-style:none}
+      .toc-list li{padding:5px 0;border-bottom:1px solid #f5f5f5}
+      .toc-list li:last-child{border-bottom:none}
+      .toc-list a{font-size:12px;color:#666;display:flex;align-items:center;gap:7px;transition:color .15s}
+      .toc-list a::before{content:'';width:8px;height:1px;background:#ccc;flex-shrink:0}
+      .toc-list a:hover{color:#ff6b35}
+      .site-footer{background:#111;padding:20px 24px}
+      .ftr-inner{max-width:1060px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+      .ftr-logo{font-size:13px;font-weight:700;color:#fff}
+      .ftr-logo span{color:#ff6b35}
+      .ftr-links{display:flex;gap:14px;flex-wrap:wrap}
+      .ftr-links a{font-size:11px;color:#555;transition:color .15s}
+      .ftr-links a:hover{color:#fff}
+      .ftr-copy{font-size:11px;color:#444;font-family:'Courier New',monospace}
+      .cat-header{background:#fff;border:1px solid #ddd;padding:24px;margin-bottom:2px}
+      .cat-label{font-family:'Courier New',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff6b35;margin-bottom:8px}
+      .cat-h1{font-size:26px;font-weight:800;letter-spacing:-.025em;color:#111;margin-bottom:8px}
+      .cat-desc{font-size:14px;color:#666;max-width:520px}
+      .cat-list{background:#fff;border:1px solid #ddd}
+      .cat-item{display:flex;gap:14px;padding:14px;border-bottom:1px solid #f2f2f2;transition:background .1s}
+      .cat-item:last-child{border-bottom:none}
+      .cat-item:hover{background:#fafaf8}
+      .cat-num{font-size:11px;color:#ccc;min-width:22px;padding-top:2px;font-family:'Courier New',monospace;flex-shrink:0}
+      .cat-body{flex:1}
+      .cat-title{font-size:14px;font-weight:600;color:#111;margin-bottom:4px;transition:color .15s}
+      .cat-item:hover .cat-title{color:#ff6b35}
+      .cat-excerpt{font-size:12px;color:#888;line-height:1.55;margin-bottom:5px}
+      .cat-date{font-size:10px;color:#bbb;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+      .cat-arrow{font-size:16px;color:#ddd;align-self:center;transition:color .15s,transform .15s;flex-shrink:0}
+      .cat-item:hover .cat-arrow{color:#ff6b35;transform:translateX(3px)}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="hdr-inner">
+        <a href="/" class="logo">
+          <span class="logo-pill">ZCJ</span>
+          Zero Click <span class="logo-accent">Journal</span>
+        </a>
+        <nav class="main-nav">
+          <a href="/ai">AI & LLM</a>
+          <a href="/seo">Digital Health</a>
+          <a href="/llm">LLM</a>
+          <a href="/business">Business</a>
+        </nav>
+        <span class="hdr-stat mono">open to all crawlers</span>
+      </div>
+    </header>
+    <slot />
+    <footer class="site-footer">
+      <div class="ftr-inner">
+        <div class="ftr-logo">Zero Click <span>Journal</span></div>
+        <div class="ftr-links">
+          <a href="/ai">AI & LLM</a>
+          <a href="/seo">Digital Health</a>
+          <a href="/llm">LLM</a>
+          <a href="/business">Business</a>
+          <a href="/robots.txt">robots.txt</a>
+          <a href="/sitemap.xml">sitemap</a>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+        <span class="ftr-copy mono">© {new Date().getFullYear()} Zero Click Journal</span>
+      </div>
+    </footer>
+  </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
